@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evidență Prezențe Facultate — Orar &amp; Obiective Seminare și Cursuri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Left Navigation Rail / Sidebar (Open Plane) -->
+    <aside class="app-sidebar" aria-label="Navigare orar și filtre rapide">
+      <div class="brand-row">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+        </span>
+        <div class="brand-text">
+          <span class="brand-name">Registru Prezențe</span>
+          <span class="brand-scope">Semestrul I · Luni–Vineri</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Moduri de vizualizare">
+        <p class="sidebar-group-label">Vizualizare orar</p>
+        <button type="button" class="nav-item active" data-view="days">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Orar pe zile</span>
+        </button>
+        <button type="button" class="nav-item" data-view="table">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+            <path d="M3 3h18v18H3z"></path>
+            <path d="M3 9h18"></path>
+            <path d="M3 15h18"></path>
+            <path d="M9 3v18"></path>
+          </svg>
+          <span>Tabel orar clasic</span>
+        </button>
+        <button type="button" class="nav-item" data-view="subjects">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <span>Grupat pe materii</span>
+        </button>
+        <button type="button" class="nav-item" data-view="calendar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <path d="M9 16l2 2 4-4"></path>
+          </svg>
+          <span>Calendar examene &amp; proiecte</span>
+          <span class="nav-count" id="nav-calendar-count">0</span>
+        </button>
+
+        <p class="sidebar-group-label">Zile săptămână</p>
+        <div class="sidebar-day-list" id="sidebar-day-list">
+          <button type="button" class="nav-item active" data-day="all">
+            <span>Toate zilele</span>
+            <span class="nav-count" id="day-count-all">13</span>
+          </button>
+          <button type="button" class="nav-item" data-day="Luni">
+            <span>Luni</span>
+            <span class="nav-count" id="day-count-Luni">3</span>
+          </button>
+          <button type="button" class="nav-item" data-day="Marți">
+            <span>Marți</span>
+            <span class="nav-count" id="day-count-Marți">2</span>
+          </button>
+          <button type="button" class="nav-item" data-day="Miercuri">
+            <span>Miercuri</span>
+            <span class="nav-count" id="day-count-Miercuri">3</span>
+          </button>
+          <button type="button" class="nav-item" data-day="Joi">
+            <span>Joi</span>
+            <span class="nav-count" id="day-count-Joi">3</span>
+          </button>
+          <button type="button" class="nav-item" data-day="Vineri">
+            <span>Vineri</span>
+            <span class="nav-count" id="day-count-Vineri">2</span>
+          </button>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="save-status" id="save-status" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Salvat automat în browser</span>
+        </div>
+        <button type="button" class="btn-secondary-action" id="btn-reset-attendances">
+          Resetează prezențele la 0
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Canvas -->
+    <main class="app-canvas" id="main-content">
+      <!-- Page Title & Primary Quick Controls -->
+      <header class="canvas-header">
+        <div class="title-block">
+          <h1>Evidență prezențe facultate</h1>
+          <p class="title-finding" id="headline-finding" aria-live="polite">
+            Apasă pe butonul + la fiecare seminar și curs sau setează numărul minim cerut de profesor pentru a activa bifa verde.
+          </p>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-cloud-sync" id="btn-open-cloud-sync">
+            <span class="cloud-status-dot" id="cloud-badge-dot" aria-hidden="true"></span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+            </svg>
+            <span id="cloud-btn-label">Sincronizare Cloud &amp; Hosting</span>
+          </button>
+          <div class="quick-target-preset" role="group" aria-label="Setare rapidă praguri">
+            <label for="bulk-seminar-target" class="preset-label">Prag rapid seminare:</label>
+            <input
+              type="number"
+              id="bulk-seminar-target"
+              class="preset-input"
+              min="0"
+              max="14"
+              value="10"
+              aria-label="Prag minim rapid pentru toate seminarele"
+            />
+            <button type="button" class="btn-outline-sm" id="btn-apply-seminar-target">
+              Aplică la seminare
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- 4-Column Achromatic Ledger KPI Strip (1px hairline divided) -->
+      <section class="kpi-ledger-strip" aria-label="Sumar obiective prezențe">
+        <div class="kpi-cell kpi-cell-lead">
+          <span class="kpi-label">Obiective îndeplinite (Bifă verde)</span>
+          <div class="kpi-value-row">
+            <span class="kpi-value kpi-value-lead" id="stat-completed">0 / 13</span>
+            <span class="kpi-unit" id="stat-completed-percent">0% complet</span>
+          </div>
+          <span class="kpi-subline" id="stat-remaining-activities">13 activități rămase</span>
+        </div>
+
+        <div class="kpi-cell">
+          <span class="kpi-label">Total prezențe bifate</span>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="stat-total-attendances">0</span>
+            <span class="kpi-unit" id="stat-total-required">din 112 necesare</span>
+          </div>
+          <span class="kpi-subline">Cumulat cursuri + seminare</span>
+        </div>
+
+        <div class="kpi-cell">
+          <span class="kpi-label">Seminare cu bifă verde</span>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="stat-seminars">0 / 7</span>
+            <span class="kpi-unit">seminare</span>
+          </div>
+          <span class="kpi-subline">Limba engleză, Drept, REI, Psiho, Micro, Sport, Marketing</span>
+        </div>
+
+        <div class="kpi-cell">
+          <span class="kpi-label">Cursuri cu bifă verde</span>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="stat-courses">0 / 6</span>
+            <span class="kpi-unit">cursuri</span>
+          </div>
+          <span class="kpi-subline">Drept, REI, Marketing, Psiho, Micro, Informatică</span>
+        </div>
+      </section>
+
+      <!-- Filter & View Toolbar -->
+      <section class="controls-toolbar" aria-label="Filtre activități și mod afișare">
+        <div class="filter-bar" id="filter-bar" role="group" aria-label="Filtrare după tip și status">
+          <button type="button" class="filter-pill active" data-filter="all">
+            Toate <span class="filter-count" id="count-all">13</span>
+          </button>
+          <button type="button" class="filter-pill" data-filter="SEMINAR">
+            Doar seminare <span class="filter-count" id="count-seminar">7</span>
+          </button>
+          <button type="button" class="filter-pill" data-filter="CURS">
+            Doar cursuri <span class="filter-count" id="count-curs">6</span>
+          </button>
+          <button type="button" class="filter-pill filter-pill-green" data-filter="completed">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Bifă verde atinsă <span class="filter-count" id="count-completed">0</span>
+          </button>
+          <button type="button" class="filter-pill" data-filter="pending">
+            Mai am nevoie de prezențe <span class="filter-count" id="count-pending">13</span>
+          </button>
+        </div>
+
+        <div class="view-switcher" id="view-switcher" role="group" aria-label="Schimbă modul de afișare">
+          <button type="button" class="view-btn active" data-view-btn="days">Pe zile</button>
+          <button type="button" class="view-btn" data-view-btn="table">Tabel orar</button>
+          <button type="button" class="view-btn" data-view-btn="subjects">Pe materii</button>
+          <button type="button" class="view-btn" data-view-btn="calendar">
+            Calendar examene &amp; proiecte (<span id="view-calendar-count">0</span>)
+          </button>
+        </div>
+      </section>
+
+      <!-- Mobile Day Selector Bar -->
+      <div class="mobile-day-strip" id="mobile-day-strip" role="group" aria-label="Filtru rapid pe zile">
+        <button type="button" class="day-chip active" data-day="all">Toate</button>
+        <button type="button" class="day-chip" data-day="Luni">Luni</button>
+        <button type="button" class="day-chip" data-day="Marți">Marți</button>
+        <button type="button" class="day-chip" data-day="Miercuri">Miercuri</button>
+        <button type="button" class="day-chip" data-day="Joi">Joi</button>
+        <button type="button" class="day-chip" data-day="Vineri">Vineri</button>
+      </div>
+
+      <!-- Dynamic Schedule Root -->
+      <div id="schedule-root" class="schedule-root" aria-live="polite"></div>
+
+      <!-- Exam & Project Calendar Section -->
+      <section id="exam-calendar-root" class="exam-calendar-section" aria-label="Calendar examene și proiecte"></section>
+    </main>
+  </div>
+
+  <!-- Cloud Sync, Hosting & Backup Dialog -->
+  <dialog id="cloud-sync-dialog" class="cloud-dialog" aria-labelledby="cloud-dialog-title">
+    <div class="cloud-dialog-inner">
+      <div class="cloud-dialog-header">
+        <div>
+          <h2 id="cloud-dialog-title" class="cloud-dialog-title">Sincronizare Cloud (Telefon ↔ Laptop) &amp; Hosting</h2>
+          <p class="cloud-dialog-subtitle">Accesează orarul de oriunde și sincronizează prezențele în timp real între dispozitive.</p>
+        </div>
+        <button type="button" class="btn-close-dialog" id="btn-close-cloud-sync" aria-label="Închide fereastra">Închide</button>
+      </div>
+
+      <div class="cloud-status-banner" id="cloud-modal-status" aria-live="polite">
+        Mod actual: <strong>Salvare locală în browser (`localStorage`)</strong>. Conectează un URL Cloud mai jos pentru sincronizare automată telefon ↔ laptop.
+      </div>
+
+      <div class="cloud-section">
+        <h3 class="cloud-section-title">1. Sincronizare Cloud automată în timp real (Firebase Realtime DB)</h3>
+        <div class="cloud-form-grid">
+          <div class="cloud-field">
+            <label for="cloud-db-url">URL Bază de Date Cloud (Firebase Realtime Database):</label>
+            <input
+              type="url"
+              id="cloud-db-url"
+              class="cloud-input"
+              placeholder="https://prezente-facultate-default-rtdb.europe-west1.firebasedatabase.app"
+            />
+          </div>
+          <div class="cloud-field">
+            <label for="cloud-sync-pin">Cod PIN / ID Personal (același pe telefon și pe laptop):</label>
+            <input
+              type="text"
+              id="cloud-sync-pin"
+              class="cloud-input"
+              placeholder="ex: dodo-2026"
+              maxlength="40"
+            />
+          </div>
+        </div>
+        <div class="cloud-btn-row">
+          <button type="button" class="btn-primary-cloud" id="btn-save-cloud-config">
+            Conectează &amp; Salvează în Cloud
+          </button>
+          <button type="button" class="btn-outline-sm" id="btn-pull-cloud">
+            Preia din Cloud acum
+          </button>
+          <button type="button" class="btn-outline-sm" id="btn-disconnect-cloud">
+            Deconectează Cloud
+          </button>
+        </div>
+      </div>
+
+      <div class="cloud-section">
+        <h3 class="cloud-section-title">2. Transfer rapid fără cont (Link Magic &amp; Backup Fișier)</h3>
+        <p class="cloud-helper-text">
+          Poți trimite toate prezențele și pragurile tale de pe laptop pe telefon printr-un singur link (pe WhatsApp) sau prin fișier `.json`:
+        </p>
+        <div class="cloud-btn-row">
+          <button type="button" class="btn-outline-sm" id="btn-copy-magic-link">
+            Copiază Link cu Prezențele mele
+          </button>
+          <button type="button" class="btn-outline-sm" id="btn-export-json">
+            Descarcă Backup (.json)
+          </button>
+          <button type="button" class="btn-outline-sm" id="btn-import-json">
+            Încarcă Backup (.json)
+          </button>
+          <input type="file" id="input-import-json" accept=".json,application/json" hidden />
+        </div>
+      </div>
+
+      <div class="cloud-steps-box">
+        <h3 class="cloud-section-title">Cum pui aplicația online în 60 de secunde (100% Gratuit):</h3>
+        <ol class="cloud-steps-list">
+          <li>
+            <strong>Hosting gratuit (Link public):</strong> Intră pe <code>app.netlify.com/drop</code> (sau <code>vercel.com</code>) și trage cu mouse-ul folderul <code>prezente-facultate</code> direct în pagină. Vei primi pe loc un link de forma <code>https://...netlify.app</code> pe care îl poți deschide pe telefon.
+          </li>
+          <li>
+            <strong>Bază de date Cloud gratuită:</strong> Intră pe <code>console.firebase.google.com</code> → <em>Add project</em> → <em>Build → Realtime Database</em> → <em>Create Database (Start in test mode)</em>. Copiază URL-ul afișat (ex. <code>https://...-default-rtdb.firebasedatabase.app</code>) și lipește-l în câmpul de mai sus împreună cu un PIN ales de tine (ex. <code>dodo-2026</code>).
+          </li>
+          <li>
+            <strong>Sincronizare Telefon ↔ Laptop:</strong> Deschide linkul pe telefon, apasă pe <em>Sincronizare Cloud</em>, introdu același URL + PIN o singură dată. De acum, orice prezență bifată la facultate pe telefon apare automat și pe laptop!
+          </li>
+        </ol>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module" src="./app.js"></script>
+  <script src="./bundle-standalone.js" defer></script>
+</body>
+</html>
